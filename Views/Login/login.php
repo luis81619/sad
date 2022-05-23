@@ -22,9 +22,14 @@
     </section>
     <section class="login-content">
       <div class="logo">
-        <h1>SEL</h1>
+        <h1>SAD</h1>
       </div>
       <div class="login-box">
+        <div id="divLoading">
+          <div>
+            <img src="<?= media(); ?>/images/loading.svg" alt="Loading">
+          </div>
+        </div>
         <form class="login-form" name="formLogin" id="formLogin" action="">
           <h3 class="login-head"><i class="fa fa-lg fa-fw fa-user"></i>Iniciar Sesión</h3>
           <div class="form-group">
@@ -34,11 +39,6 @@
           <div class="form-group">
             <label class="control-label">Contraseña</label>
             <input id="loginPassword" name="loginPassword" class="form-control" type="password" placeholder="Contraseña">
-          </div>
-          <div class="form-group">
-            <div class="utility">
-              <p class="semibold-text mb-2"><a href="#" data-toggle="flip">¿Olvidaste tu contraseña?</a></p>
-            </div>
           </div>
           <div id="alertLogin" class="text-center"></div>
           <div class="form-group btn-container">

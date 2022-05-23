@@ -1,8 +1,13 @@
-<?php 
-  headerAdmin($data);
-  getModalCarpeta('Usuarios','modalUsuarios', $data); 
-?>
+<?php headerAdmin($data);?>
+
     <main class="app-content">
+<?php
+    getModalCarpeta('Usuarios','modalUsuarios', $data);
+    if(!empty($_SESSION['userData']['users_rol'] != 3)){
+?>
+    <p>Acceso Restringido</p>
+    <?php
+    }else{?>
       <div class="app-title">
         <div>
           <h1><i class="fas fa-user-tag"></i> <?= $data['page_title'] ?>
@@ -42,7 +47,7 @@
         </div>
       </div>
 
-
+<?php } ?>
 
     </main>
 <?php footerAdmin($data); ?>

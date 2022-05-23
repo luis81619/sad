@@ -8,7 +8,14 @@ header("Allow: GET, POST, OPTIONS, PUT, DELETE");
         
         public function __construct()
         {
+            sessionStart();
             parent::__construct();
+            //session_start();
+            //session_regenerate_id(true);
+            if(empty($_SESSION['login']))
+            {
+                header('Location: '.base_url().'/login');
+            }
 
         }
 
@@ -37,31 +44,37 @@ header("Allow: GET, POST, OPTIONS, PUT, DELETE");
 
         public function setOficio(){
 
-            //dep($_POST);
-            //echo("\n");
-            //dep($_FILES);
-
-            $documento = $_FILES['oficioArchivo']['tmp_name'];
-            $descripcion = "Descripcion-LUIS";
-            dep($documento);
-            echo("\n");
-            dep($descripcion);
-            //die();
-            apiDrive($documento, $descripcion);
-
-            /*
             if(($_POST) && ($_FILES['oficioArchivo']['name'] != "" )){
+                //dep($_POST); echo("\n"); dep($_FILES);
+                //die();
 
-                //$apiDrive = apiDrive();
-
-                dep($apiDrive);
+                if(empty($_POST['nOficio']) || empty($_POST['datetime']) || empty($_POST['oficioPlantelid']) || empty($_POST['oficioPlantelid']) 
+                || empty($_POST['oficioDirigido']) || empty($_POST['oficioEmite']) || empty($_POST['oficioAsunto']) ){
+                    
+                    $arrResponse = array("status" => false, "msg" => 'Datos incorrectos.');
+                }else{
+                    $strNoficio = strtoupper(strClean($_POST['nOficio']));
+                    $strNoficio = strtoupper(strClean($_POST['datetime']));
+                    $strNoficio = strtoupper(strClean($_POST['oficioPlantelid']));
+                    $strNoficio = strtoupper(strClean($_POST['oficioDirigido']));
+                    $strNoficio = strtoupper(strClean($_POST['oficioEmite']));
+                    $strNoficio = strtoupper(strClean($_POST['oficioAsunto']));
+                }
                 
                 
             }else{
                 echo("Triste");
 
             }
-         */   
+
+            $documento = $_FILES['oficioArchivo']['tmp_name'];
+            $descripcion = "Descripcion-LUIS";
+            $nombre = $_FILES['oficioArchivo']['name'];
+            dep($documento);
+            echo("\n");
+            dep($descripcion);
+            //die();
+            apiDrive($nombre, $documento, $descripcion);
         }
 
     }

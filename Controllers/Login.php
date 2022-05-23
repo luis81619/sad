@@ -10,6 +10,7 @@ header("Allow: GET, POST, OPTIONS, PUT, DELETE");
         public function __construct()
         {
             session_start();
+            
             if(isset($_SESSION['login']))
             {
                 header('Location: '.base_url().'/dashboard');
@@ -30,6 +31,7 @@ header("Allow: GET, POST, OPTIONS, PUT, DELETE");
 
         public function loginUser(){
             //dep($_POST);
+            // die();
             if($_POST){
                 if(empty($_POST['loginEmail']) || empty($_POST['loginPassword'])){
                     $arrResponse = array('status' => false, 'msg' => 'Error de datos');
@@ -43,19 +45,25 @@ header("Allow: GET, POST, OPTIONS, PUT, DELETE");
                         $arrResponse = array('status' => false, 'msg' => 'El usuario o la contraseña es incorrecto.');
                     }else{
                         $arrData = $requestUser;
-                        if($arrData['usuario_status'] == 1){
-                            $_SESSION['idUser'] = $arrData['usuario_id'];
+                        if($arrData['users_status'] == 1){
+                            $_SESSION['idUser'] = $arrData['users_id'];
                             $_SESSION['login'] = true;
+                            $_SESSION['timeout'] = true;
+                            $_SESSION['inicio'] = time();
 
-                            
+                            $arrData = $this->model->sessionLogin($_SESSION['idUser']);
+                            $_SESSION['userData'] = $arrData;
+
+
                             $arrResponse = array('status' => true, 'msg' => 'OK.');
                             
-                        }else{
+                        }else{ 
                             $arrResponse = array('status' => false, 'msg' => 'Usuario inactivo.');
                         }
                     }
 
                 }
+                sleep(5);
                 echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
             }
             die();

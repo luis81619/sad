@@ -1,8 +1,13 @@
-<?php 
-  headerAdmin($data);
-  getModalCarpeta('Oficios','modalOficios', $data); 
-?>
+<?php headerAdmin($data); ?>
     <main class="app-content">
+
+<?php
+    getModalCarpeta('Oficios','modalOficios', $data);
+    if(!empty($_SESSION['userData']['users_rol'] != 3 && $_SESSION['userData']['users_rol'] != 1)){
+?>
+    <p>Acceso Restringido</p>
+    <?php
+    }else{?>
       <div class="app-title">
         <div>
           <h1><i class="fas fa-user-tag"></i> <?= $data['page_title'] ?>
@@ -41,8 +46,6 @@
           </div>
         </div>
       </div>
-
-
-
+      <?php } ?>
     </main>
 <?php footerAdmin($data); ?>

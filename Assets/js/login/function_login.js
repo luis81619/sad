@@ -1,7 +1,4 @@
-$('.login-content [data-toggle="flip"]').click(function() {
-    $('.login-box').toggleClass('flipped');
-    return false;
-});
+var divLoading = document.querySelector("#divLoading");
 
 document.addEventListener('DOMContentLoaded', function(){
     if(document.querySelector("#formLogin")){
@@ -18,6 +15,7 @@ document.addEventListener('DOMContentLoaded', function(){
                 swal("Por favor", "Escribe usuario y contraseña", "error");
                 return false;
             }else{
+                divLoading.style.display = "flex";
                 var request = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
 				var ajaxUrl = base_url+'/Login/loginUser'; 
 				var formData = new FormData(formLogin);
@@ -38,6 +36,7 @@ document.addEventListener('DOMContentLoaded', function(){
                     }else{
                         swal("Atenciòn", "Error en el proceso", "error")
                     }
+                    divLoading.style.display = "none";
                     return false;
 
                 //console.log(request);

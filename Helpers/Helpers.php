@@ -65,7 +65,7 @@ require 'Libraries/apiDrive/vendor/autoload.php';
     }
 
     //api-DRIVE
-    function apiDrive($documento,$descripcion){
+    function apiDrive($nombre,$documento,$descripcion){
           // Variables de credenciales.
     $claveJSON = '1CaYNqbfwUDgZa99oKONBKPXe0LIPUbg3';
     $pathJSON = 'archivoprueba-66b65b06b014.json';
@@ -82,7 +82,7 @@ require 'Libraries/apiDrive/vendor/autoload.php';
 
         //instacia de archivo
         $file = new Google_Service_Drive_DriveFile();
-        $file->setName($documento);
+        $file->setName($nombre);
 
         //obtenemos el mime type
         $finfo = finfo_open(FILEINFO_MIME_TYPE); 
@@ -218,6 +218,19 @@ require 'Libraries/apiDrive/vendor/autoload.php';
             echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
         }
 
+    }
+
+    function sessionStart(){
+        session_start();
+        $inactive = 14400;
+        if(isset($_SESSION['timeout'])){
+            $session_in = time() - $_SESSION['inicio'];
+            if($session_in > $inactive){
+                header("Location: ".BASE_URL."/logout");
+            }
+        }else{
+            header("Location: ".BASE_URL."/logout");
+        }
     }
 
     //Elimina exceso de espacios entre palabras

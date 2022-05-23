@@ -8,7 +8,14 @@ header("Allow: GET, POST, OPTIONS, PUT, DELETE");
         
         public function __construct()
         {
+            sessionStart();
             parent::__construct();
+            //session_start();
+            //session_regenerate_id(true);
+            if(empty($_SESSION['login']))
+            {
+                header('Location: '.base_url().'/login');
+            }
 
         }
 
@@ -108,7 +115,7 @@ header("Allow: GET, POST, OPTIONS, PUT, DELETE");
 
                 }
 
-                
+                sleep(5);
                 echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
                 
 
@@ -118,51 +125,57 @@ header("Allow: GET, POST, OPTIONS, PUT, DELETE");
 
         public function getUsuarios()
         {
-            $arrData = $this->model->selectUsuarios();
-            //dep($arrData);
-            for ($i=0; $i < count($arrData); $i++) { 
+            if(!empty($_SESSION['userData']['users_rol'] == 3)){
+            
+                $arrData = $this->model->selectUsuarios();
+                //dep($arrData);
+                for ($i=0; $i < count($arrData); $i++) { 
 
-                if($arrData[$i]['users_rol'] == 1)
-                {
-                    $arrData[$i]['users_rol'] = '<span>DIGITALIZADOR</span>';
+                    if($arrData[$i]['users_rol'] == 1)
+                    {
+                        $arrData[$i]['users_rol'] = '<span>DIGITALIZADOR</span>';
 
-                }else{
-                    $arrData[$i]['users_rol'] = '<span>ADMINISTRADOR</span>';
-                }
+                    }else{
+                        $arrData[$i]['users_rol'] = '<span>ADMINISTRADOR</span>';
+                    }
 
-                if($arrData[$i]['users_status'] == 1)
-                {
-                    $arrData[$i]['users_status'] = '<span class="badge-success">Activo</span>';
+                    if($arrData[$i]['users_status'] == 1)
+                    {
+                        $arrData[$i]['users_status'] = '<span class="badge-success">Activo</span>';
 
-                }else{
-                    $arrData[$i]['users_status'] = '<span class="badge-danger">Inactivo</span>';
-                }
+                    }else{
+                        $arrData[$i]['users_status'] = '<span class="badge-danger">Inactivo</span>';
+                    }
 
-                $arrData[$i]['options'] = '<div class="text-center"> 
-                <button class="btn btn-info btn-sm btnViewUsuario" onClick="fntViewUsuario('.$arrData[$i]['users_id'].')" title="Ver usuario"><i class="far fa-eye"></i></button>
-                <button class="btn btn-primary btn-sm btnEditUsuario" onClick="fntEditUsuario('.$arrData[$i]['users_id'].')" title="Editar Usuario"><i class="fas fa-pencil-alt"></i></button>
-                <button class="btn btn-danger btn-sm btnDelUsuario" onClick="fntDelUsuario('.$arrData[$i]['users_id'].')" title="Eliminar Usuario"><i class="fas fa-power-off"></i></button>
-                </div>';
+                    $arrData[$i]['options'] = '<div class="text-center"> 
+                    <button class="btn btn-info btn-sm btnViewUsuario" onClick="fntViewUsuario('.$arrData[$i]['users_id'].')" title="Ver usuario"><i class="far fa-eye"></i></button>
+                    <button class="btn btn-primary btn-sm btnEditUsuario" onClick="fntEditUsuario(this,'.$arrData[$i]['users_id'].')" title="Editar Usuario"><i class="fas fa-pencil-alt"></i></button>
+                    </div>';
+                    }
+                    echo json_encode($arrData,JSON_UNESCAPED_UNICODE);    
             }
-            echo json_encode($arrData,JSON_UNESCAPED_UNICODE);
+            
             die();
 
         }
 
-        public function getUsuario(int $idpersona){
+        public function getUsuario($idpersona){
             //echo $idpersona;
-            $idusuario = intval($idpersona);
-            if($idusuario > 0)
-            {
-                $arrData = $this->model->selectUsuario($idusuario);
-                if(empty($arrData))
-				{
-					$arrResponse = array('status' => false, 'msg' => 'Datos no encontrados.');
-				}else{
-					$arrResponse = array('status' => true, 'data' => $arrData);
-				}
-				echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
-                
+            if(!empty($_SESSION['userData']['users_rol'] == 3)){
+
+                $idusuario = intval($idpersona);
+                if($idusuario > 0)
+                {
+                    $arrData = $this->model->selectUsuario($idusuario);
+                    if(empty($arrData))
+                    {
+                        $arrResponse = array('status' => false, 'msg' => 'Datos no encontrados.');
+                    }else{
+                        $arrResponse = array('status' => true, 'data' => $arrData);
+                    }
+                    echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
+                    
+                }
             }
             die();
         }
