@@ -1,4 +1,56 @@
+let tableOficios;
+
 document.addEventListener('DOMContentLoaded', function(){
+
+    tableOficios = $('#tableOficios').dataTable( {
+		"aProcessing":true,
+		"aServerSide":true,
+        "language": {
+        	"url": "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
+        },
+        "ajax":{
+            "url": " "+base_url+"/Oficios/getOficios",
+            "dataSrc":""
+        },
+        "columns":[
+            {"data":"oficio_serie"},
+            {"data":"oficio_folio"},
+            {"data":"oficio_dirigido"},
+            {"data":"oficio_asunto"},
+            {"data":"oficio_emite"},
+            {"data":"nombre"},
+            {"data":"oficio_status"},
+            {"data":"options"}
+        ],'dom': 'lBfrtip',
+        'buttons': [
+            {
+                "extend": "copyHtml5",
+                "text": "<i class='far fa-copy'></i> Copiar",
+                "titleAttr":"Copiar",
+                "className": "btn btn-secondary"
+            },{
+                "extend": "excelHtml5",
+                "text": "<i class='fas fa-file-excel'></i> Excel",
+                "titleAttr":"Esportar a Excel",
+                "className": "btn btn-success"
+            },{
+                "extend": "pdfHtml5",
+                "text": "<i class='fas fa-file-pdf'></i> PDF",
+                "titleAttr":"Esportar a PDF",
+                "className": "btn btn-danger"
+            },{
+                "extend": "csvHtml5",
+                "text": "<i class='fas fa-file-csv'></i> CSV",
+                "titleAttr":"Esportar a CSV",
+                "className": "btn btn-info"
+            }
+        ],
+        "resonsieve":"true",
+        "bDestroy": true,
+        "iDisplayLength": 10,
+        "order":[[0,"desc"]]  
+    });
+
 
     var formUsuario = document.querySelector("#formOficios");
     formUsuario.onsubmit = function(e){
@@ -21,37 +73,37 @@ document.addEventListener('DOMContentLoaded', function(){
             return false;
         }
 
-        /*
+        
         let elementsValid = document.getElementsByClassName("valid");
         for (let i = 0; i < elementsValid.length; i++) { 
             if(elementsValid[i].classList.contains('is-invalid')) { 
                 swal("Atención", "Por favor verifique los campos en rojo." , "error");
                 return false;
             } 
-        } */
+        }
 
+        divLoading.style.display = "flex";
         var request = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
         var ajaxUrl = base_url+'/Oficios/setOficio'; 
         var formData = new FormData(formOficios);
         request.open("POST",ajaxUrl,true);
         request.send(formData);
-
         request.onreadystatechange = function(){
             if(request.readyState == 4 && request.status == 200){
-                console.log(request);
-                /*
                 var objData = JSON.parse(request.responseText);
                 
                 if(objData.status)
                 {
-                    $('#modalFormUsuario').modal("hide");
-                    formUsuario.reset();
-                    swal("Usuarios", objData.msg, "success");
-                    tableUsuarios.api().ajax.reload();
+                    $('#modalFormOficios').modal("hide");
+                    formOficios.reset();
+                    swal("Oficios", objData.msg, "success");
+                    tableOficios.api().ajax.reload();
                 }else{
                     swal("Error", objData.msg, "error");
-                }*/
+                }
             }
+            divLoading.style.display = "none";
+            return false;
             
         }
 
@@ -86,6 +138,32 @@ $('#datetime').datepicker({
     autoclose: true,
     todayBtn: true
 });
+
+function fntViewOficio(idOficioArchivo) {
+    let idArchivo = idOficioArchivo;
+    //alert(idArchivo);
+	
+    $.ajax({
+        type: 'GET',
+        url: 'http://archivo.cecytem.net:8080/DriveService/service/drive/archivo/download?id='+idArchivo,
+        dataType: 'json',
+        success: function (data) {
+
+        const binaryString = window.atob(data.content);
+        const len = binaryString.length;
+        const bytes = new Uint8Array(len);
+        for (let i = 0; i < len; ++i) {
+            bytes[i] = binaryString.charCodeAt(i);
+        }
+        var datosblob = new Blob([bytes], { type: 'application/pdf' });
+        $('#documentoOficio').attr('src',URL.createObjectURL(datosblob));
+        $('#modalViewOficio').modal('show');
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+        console.log('error al ejecutar');
+    }
+});
+}
 
 
 document.querySelector('#oficioArchivo').addEventListener('change', () => {

@@ -36,13 +36,13 @@
                     </select>
                
                  <label class="control-label">Dirigido a: </label>
-                     <input class="form-control" id="oficioDirigido" name="oficioDirigido" type="text" placeholder="Dirigido a" required="">
+                     <input class="form-control valid validText" id="oficioDirigido" name="oficioDirigido" type="text" placeholder="Dirigido a" required="">
 
                   <label class="control-label">Emite</label>
-                  <input class="form-control" id="oficioEmite" name="oficioEmite" type="text" placeholder="Emite" required="">
+                  <input class="form-control valid validText" id="oficioEmite" name="oficioEmite" type="text" placeholder="Emite" required="">
                   
                     <label class="control-label">Asunto</label>
-                     <input class="form-control" id="oficioAsunto" name="oficioAsunto" type="text" placeholder="No. de Oficio" required="">
+                     <input class="form-control valid validText" id="oficioAsunto" name="oficioAsunto" type="text" placeholder="No. de Oficio" required="">
                   
                   
                   
@@ -68,7 +68,7 @@
 </div>
 
 <!-- Modal Visualizar usuario -->
-<div class="modal fade" id="modalViewUsuario" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="modalViewOficio" tabindex="-1" role="dialog" aria-hidden="true">
    <div class="modal-dialog modal-xl">
       <div class="modal-content">
          <div class="modal-header header-primary">
@@ -78,46 +78,7 @@
             </button>
          </div>
          <div class="modal-body">
-            <table class="table table-bordered">
-            <tbody>
-                <tr>
-                <td>Folio:</td>
-                <td id="celNoTrabajador">654654654</td>
-                </tr>
-                <tr>
-                <td>Nombres:</td>
-                <td id="celNombre">Jacob</td>
-                </tr>
-                <tr>
-                <td>Apellido Materno:</td>
-                <td id="celApellido1">Jacob</td>
-                </tr>
-                <tr>
-                <td>Apellido Paterno:</td>
-                <td id="celApellido2">Jacob</td>
-                </tr>
-                <tr>
-                <td>Email (Usuario):</td>
-                <td id="celEmail">Larry</td>
-                </tr>
-                <tr>
-                <td>Plantel:</td>
-                <td id="celPlantel">Larry</td>
-                </tr>
-                <tr>
-                <td>Tipo Usuario:</td>
-                <td id="celTipoUsuario">Larry</td>
-                </tr>
-                <tr>
-                <td>Status:</td>
-                <td id="celStatus">Larry</td>
-                </tr>
-                <tr>
-                <td>Fecha registro:</td>
-                <td id="celFechaRegistro">Larry</td>
-                </tr>
-            </tbody>
-            </table>
+            <embed src="" type="application/pdf" id="documentoOficio" width="100%" height="600px" />
          </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>

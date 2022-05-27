@@ -65,7 +65,7 @@ require 'Libraries/apiDrive/vendor/autoload.php';
     }
 
     //api-DRIVE
-    function apiDrive($nombre,$documento,$descripcion){
+    function apiDrive($nombre,$documento){
           // Variables de credenciales.
     $claveJSON = '1CaYNqbfwUDgZa99oKONBKPXe0LIPUbg3';
     $pathJSON = 'archivoprueba-66b65b06b014.json';
@@ -90,7 +90,7 @@ require 'Libraries/apiDrive/vendor/autoload.php';
 
         //id de la carpeta donde hemos dado el permiso a la cuenta de servicio 
         $file->setParents(array($claveJSON));
-        $file->setDescription($descripcion);
+        //$file->setDescription($descripcion);
         $file->setMimeType($mime_type);
 
         $result = $service->files->create(
@@ -102,13 +102,16 @@ require 'Libraries/apiDrive/vendor/autoload.php';
           )
         );
         /* FICHERO SUBIDO A GOOGLE DRIVE */
-        echo "2.- Fichero subido a Google Drive. ";
+        //echo "2.- Fichero subido a Google Drive. ";
+        $ruta = $result->id;
+        return $ruta;
     }catch(Google_Service_Exception $gs){
         $m=json_decode($gs->getMessage());
-        echo $m->error->message;
+        //echo $m->error->message;
+        return "exit";
     }catch(Exception $e){
-        echo $e->getMessage();
-      
+        //echo $e->getMessage();
+        return "exit";
     }
     }   
 
@@ -143,13 +146,13 @@ require 'Libraries/apiDrive/vendor/autoload.php';
                 $mail->isSMTP();                                            //Send using SMTP
                 $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
                 $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
-                $mail->Username   = 'a0081771@cecytem.edu.mx';                     //SMTP username
-                $mail->Password   = 'locura81619';                               //SMTP password
+                $mail->Username   = 'archivo@cecytem.edu.mx';                     //SMTP username
+                $mail->Password   = 'archivodigital2020';                               //SMTP password
                 $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
                 $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
 
                 //Recipients
-                $mail->setFrom('a0081771@cecytem.edu.mx', 'ACTIVACION DE CUENTA - SEL');
+                $mail->setFrom('archivo@cecytem.edu.mx', 'SISTEMA DE OFICIOS DIGITALES - CECYTEM');
                 $mail->addAddress($data['email']);     //Add a recipient
                 //$mail->addAddress('ellen@example.com');               //Name is optional
                 //$mail->addReplyTo('info@example.com', 'Information');
@@ -292,6 +295,12 @@ require 'Libraries/apiDrive/vendor/autoload.php';
         $r4 = bin2hex(random_bytes(10));
         $token = $r1.'-'.$r2.'-'.$r3.'-'.$r4;
         return $token;
+    }
+
+    function depFecha($fecha){
+        $spfecha = explode("/", $fecha);
+        $return = $spfecha[2]."-".$spfecha[1]."-".$spfecha[0]; 
+        return $return;
     }
 
 

@@ -25,16 +25,17 @@
           <div class="tile">
             <div class="tile-body">
               <div class="table-responsive">
-                <table class="table table-hover table-bordered" id="tableUsuarios">
+                <table class="table table-hover table-bordered" id="tableOficios">
                   <thead>
                     <tr>
-                      <th>NO. TRABAJADOR</th>
-                      <th>NOMBRE DEL TRABAJADOR</th>
-                      <th>CORREO ELECTRONICO</th>
-                      <th>PLANTEL</th>
-                      <th>Rol</th>
-                      <th>Status</th>
-                      <th>Acciones</th>
+                      <th>NO. OFICIO</th>
+                      <th>NO. FOLIO</th>
+                      <th>DIRIGIDO A</th>
+                      <th>ASUNTO</th>
+                      <th>EMITE</th>
+                      <th>RECIBE</th>
+                      <th>STATUS</th>
+                      <th>ACCIONES</th>
                     </tr>
                   </thead>
                   <tbody>

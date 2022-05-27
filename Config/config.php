@@ -20,7 +20,7 @@
 	const NOMBRE_REMITENTE = "SISTEMA EVALUACION EN LINEA";
 	const EMAIL_REMITENTE = "no-reply@cecytem.edu.mx";
 
-	const NOMBRE_SISTEMA = "BIENVENIDO AL SISTEMA EVALUACION EN LINEA";
+	const TITULO_EMISOR = "EMISIÓN DE OFICIO DIGITAL";
 	const WEB_SISTEMA = "www.cecyte.edu.mx";
 
  ?>

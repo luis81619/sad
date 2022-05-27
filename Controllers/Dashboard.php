@@ -20,6 +20,8 @@
            $data['page_tag'] = "Dashboard - SEL";
            $data['page_title'] = "Dashboard - SEL";
            $data['page_name'] = "Dashboard";
+           $data['carp_js'] = "dashboard";
+           $data['arc_js'] = "function_dashboard";
            $this->views->getView($this, "dashboard", $data);
         }
     }

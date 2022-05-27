@@ -31,6 +31,7 @@
             $this->intIdUsuario = $iduser;
             $sql = "SELECT * FROM sad_trabajador st
             INNER JOIN sad_users su ON st.trabajador_id = su.trabajador_id
+            INNER JOIN sad_plantel sp ON st.plantel_id = sp.id
             WHERE su.users_id = $this->intIdUsuario";
             $request = $this->select($sql);
             return $request;
