@@ -43,6 +43,7 @@ header("Allow: GET, POST, OPTIONS, PUT, DELETE");
         }
 
         public function setOficio(){
+            //dep($_FILES);
             //die();
             
             if(($_POST) && ($_FILES['oficioArchivo']['name'] != "" )){
@@ -53,8 +54,8 @@ header("Allow: GET, POST, OPTIONS, PUT, DELETE");
                     $arrResponse = array("status" => false, "msg" => 'Datos incorrectos.');
                 }else{
                     $documento = $_FILES['oficioArchivo']['tmp_name'];
-                    $nombre = strtoupper(strClean($_POST['nOficio']));
-                    $respAPI = apiDrive($nombre, $documento);
+                    $nombreArchivo = strtoupper(strClean($_POST['nOficio']));
+                    $respAPI = apiDrive($nombreArchivo, $documento);
                     
                     if($respAPI != "exit"){
                         $idarchivo =  $respAPI;
@@ -69,6 +70,7 @@ header("Allow: GET, POST, OPTIONS, PUT, DELETE");
                         $strEmailEmite = strClean($_SESSION['userData']['users_email']);
                         $intplantelEmite = intval(strClean($_SESSION['userData']['plantel_id']));
                         $strFolio = $this->model->generarFolio();
+                        $strToken = token();
 
                         $request_oficio = $this->model->insertOficio(
                             $idarchivo,
@@ -79,7 +81,9 @@ header("Allow: GET, POST, OPTIONS, PUT, DELETE");
                             $strDirigido,
                             $intplantelEmite,
                             $intPlantelRecibe,
-                            $strFolio);
+                            $strFolio,
+                            $strToken,
+                            $nombreArchivo);
                         
                         if($request_oficio > 0){
                             $arrResponse = array('status' => true, 'msg' => 'Tu oficio se ha generado correctamente');
@@ -111,25 +115,62 @@ header("Allow: GET, POST, OPTIONS, PUT, DELETE");
         public function getOficios()
         {
             //if(!empty($_SESSION['userData']['users_rol'] == 3 || $_SESSION['userData']['users_rol'] == 1)){
-            
-                $arrData = $this->model->selectOficos();
 
-                
+                $usuarioPlantel = intval(strClean($_SESSION['userData']['plantel_id']));
+                $arrData = $this->model->selectOficos($usuarioPlantel);
+                $archivoId="";
                 //dep($arrData);
                 //die();
-                for ($i=0; $i < count($arrData); $i++) { 
+                for ($i=0; $i < count($arrData); $i++) {
+                    //echo("hola: ".$arrData[$i]['acuse_folio']);
+                   // $archivoId = strval($arrData[$i]['acuse_folio']);                    
 
-                    if($arrData[$i]['oficio_status'] == 1)
-                    {
-                        $arrData[$i]['oficio_status'] = '<span class="badge-success">EN ESPERA</span>';
+    
 
-                    }else{
-                        $arrData[$i]['oficio_status'] = '<span class="badge-danger">ACUSE</span>';
+                    if(($arrData[$i]['idEmite'] == $usuarioPlantel && $arrData[$i]['idRecibe'] != $usuarioPlantel) && $arrData[$i]['acuse_folio'] == null){
+                        $arrData[$i]['options'] = '<div class="text-center"> 
+                        <button class="btn btn-info btn-sm btnViewOficios" onClick="fntViewOficio('.$arrData[$i]['oficio_id'].",'".$arrData[$i]['archivo_ruta']."'".')" title="Ver ofico"><i class="fa fa-folder"></i></button>
+                        <button class="btn btn-secondary btn-sm btnViewDetalles" onClick="fntViewOficio('."'".$arrData[$i]['oficio_id']."'".')" title="Detalles"><i class="fa fa-info"></i></button>
+                        <button class="btn btn-success btn-sm btnViewDetalles" onClick="fntViewOficio('."'".$arrData[$i]['oficio_id']."'".')" title="Ver Acuse"><i class="far fa-eye"></i></button>
+                        </div>';
+
+                    }else if(($arrData[$i]['idEmite'] != $usuarioPlantel && $arrData[$i]['idRecibe'] == $usuarioPlantel) && $arrData[$i]['acuse_folio'] == null){
+                        $arrData[$i]['options'] = '<div class="text-center"> 
+                        <button class="btn btn-info btn-sm btnViewOficios" onClick="fntViewOficio('.$arrData[$i]['oficio_id'].",'".$arrData[$i]['archivo_ruta']."'".')" title="Ver ofico"><i class="fa fa-folder"></i></button>
+                        <button class="btn btn-secondary btn-sm btnViewDetalles" onClick="fntViewOficio('."'".$arrData[$i]['oficio_id']."'".')" title="Detalles"><i class="fa fa-info"></i></button>
+                        
+                        <button class="btn btn-danger btn-sm btnViewAcuse" onClick="fntEditUsuario(this,'.$arrData[$i]['oficio_id'].')" title="Acuse"><i class="fa fa-handshake-o"></i></button>
+                        </div>';
+
+                    }else if(($arrData[$i]['idEmite'] != $usuarioPlantel && $arrData[$i]['idRecibe'] == $usuarioPlantel) && $arrData[$i]['acuse_folio'] != null){
+                        $arrData[$i]['options'] = '<div class="text-center"> 
+                        <button class="btn btn-info btn-sm btnViewOficios" onClick="fntViewOficio('.$arrData[$i]['oficio_id'].",'".$arrData[$i]['archivo_ruta']."'".')" title="Ver ofico"><i class="fa fa-folder"></i></button>
+                        <button class="btn btn-secondary btn-sm btnViewDetalles" onClick="fntViewOficio('."'".$arrData[$i]['oficio_id']."'".')" title="Detalles"><i class="fa fa-info"></i></button>
+                        <button class="btn btn-success btn-sm btnViewDetalles" onClick="fntViewOficio('."'".$arrData[$i]['oficio_id']."'".')" title="Ver Acuse"><i class="far fa-eye"></i></button>
+                        </div>';
+
+                    }
+                    else if(($arrData[$i]['idEmite'] == $usuarioPlantel && $arrData[$i]['idRecibe'] != $usuarioPlantel) && $arrData[$i]['acuse_folio'] != null){
+                        $arrData[$i]['options'] = '<div class="text-center"> 
+                        <button class="btn btn-info btn-sm btnViewOficios" onClick="fntViewOficio('.$arrData[$i]['oficio_id'].",'".$arrData[$i]['archivo_ruta']."'".')" title="Ver ofico"><i class="fa fa-folder"></i></button>
+                        <button class="btn btn-secondary btn-sm btnViewDetalles" onClick="fntViewOficio('."'".$arrData[$i]['oficio_id']."'".')" title="Detalles"><i class="fa fa-info"></i></button>
+                        <button class="btn btn-success btn-sm btnViewDetalles" onClick="fntViewOficio('."'".$arrData[$i]['oficio_id']."'".')" title="Ver Acuse"><i class="far fa-eye"></i></button>
+                        </div>';
+
                     }
 
+                    //$arrData[$i]['options'] = "opc1";
+                    
+                   //echo("hola: ".$arrData[$i]['acuse_folio']);
+
+                    /*
                     $arrData[$i]['options'] = '<div class="text-center"> 
-                    <button class="btn btn-info btn-sm btnViewUsuario" onClick="fntViewOficio('."'".$arrData[$i]['oficio_archivo_id']."'".')" title="Ver ofico"><i class="far fa-eye"></i></button>
-                    </div>';
+                    <button class="btn btn-info btn-sm btnViewOficios" onClick="fntViewOficio('."'".$arrData[$i]['oficio_id']."'".')" title="Ver ofico"><i class="fa fa-folder"></i></button>
+                    <button class="btn btn-secondary btn-sm btnViewDetalles" onClick="fntViewOficio('."'".$arrData[$i]['oficio_id']."'".')" title="Detalles"><i class="fa fa-info"></i></button>
+                    <button class="btn btn-danger btn-sm btnViewAcuse" onClick="fntViewOficio('."'".$arrData[$i]['oficio_id']."'".')" title="Acuse"><i class="fa fa-handshake-o"></i></button>
+                    <button class="btn btn-success btn-sm btnViewDetaññes" onClick="fntViewOficio('."'".$arrData[$i]['oficio_id']."'".')" title="Ver Acuse"><i class="far fa-eye"></i></button>
+                    </div>';*/
+
                     }
                     echo json_encode($arrData,JSON_UNESCAPED_UNICODE);    
            // }
@@ -137,7 +178,6 @@ header("Allow: GET, POST, OPTIONS, PUT, DELETE");
             die();
 
         }
-        
 
     }
 

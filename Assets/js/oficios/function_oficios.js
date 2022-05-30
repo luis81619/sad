@@ -17,8 +17,8 @@ document.addEventListener('DOMContentLoaded', function(){
             {"data":"oficio_folio"},
             {"data":"oficio_dirigido"},
             {"data":"oficio_asunto"},
-            {"data":"oficio_emite"},
-            {"data":"nombre"},
+            {"data":"plantelEmite"},
+            {"data":"plantelRecibe"},
             {"data":"oficio_status"},
             {"data":"options"}
         ],'dom': 'lBfrtip',
@@ -139,9 +139,9 @@ $('#datetime').datepicker({
     todayBtn: true
 });
 
-function fntViewOficio(idOficioArchivo) {
+function fntViewOficio(idOficio  ,idOficioArchivo) {
     let idArchivo = idOficioArchivo;
-    //alert(idArchivo);
+    //alert(idOficio);
 	
     $.ajax({
         type: 'GET',
@@ -157,12 +157,17 @@ function fntViewOficio(idOficioArchivo) {
         }
         var datosblob = new Blob([bytes], { type: 'application/pdf' });
         $('#documentoOficio').attr('src',URL.createObjectURL(datosblob));
-        $('#modalViewOficio').modal('show');
+        
     },
     error: function (jqXHR, textStatus, errorThrown) {
         console.log('error al ejecutar');
     }
 });
+    var urlFolioEmisor = 'http://localhost/sad/folios/generarFolioEmite/'+idOficio;
+
+    $('#documentoFolioEmisor').attr('src', urlFolioEmisor);
+
+    $('#modalViewOficio').modal('show');
 }
 
 
@@ -174,6 +179,10 @@ document.querySelector('#oficioArchivo').addEventListener('change', () => {
     document.querySelector('#vistaPrevia').setAttribute('src', archivoOficioURL);
     //console.log(archivoOficio);
 })
+
+function fntEditUsuario(element, idusuario) {
+    $('#modalFormAcuse').modal('show');
+}
 
 function openModal(){
     document.querySelector('#oficioId').value="";

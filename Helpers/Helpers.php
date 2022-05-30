@@ -54,6 +54,14 @@ require 'Libraries/apiDrive/vendor/autoload.php';
         require_once $view_modal;        
     }
 
+    function getFile(string $url, $data)
+    {
+        ob_start();
+        require_once("Views/{$url}.php");
+        $file = ob_get_clean();
+        return $file;
+    }
+
 
     //Muestra información formateada
 	function dep($data)
