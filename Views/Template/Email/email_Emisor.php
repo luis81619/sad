@@ -102,22 +102,22 @@
 			</tr>
 			<tr>
 				<td>
-					<img src="<?= base_url(); ?>/Assets/images/michoacan_logo.jpg" class="x_text_left">
+					<img src="http://localhost/sad/assets/images/michoacan.jpeg" class="x_text_left">
 					<br><br><br>
-					<p class="x_text_aling">Enviado el dia <strong>2021-10-19 14:02:49</strong></p>
+					<p class="x_text_aling">Fecha: <strong><?= $data['fecha_emision']; ?></strong></p>
 					<div class="x_sgwrap">
 						<p>Hola <?= $data['nombreEmisor']; ?></p>
 					</div>
 					<p>Se ha registrado correctame el oficio en el sistema SOD con los siguientes datos:</p>
 					<p>Serie de sistema: <strong><?= $data['folio']; ?></strong></p>
 					<p>Folio del oficio: <strong><?= $data['serie']; ?></strong></p>
-					<p>Fecha de emision: <strong><?= $data['fecha_emision']; ?></strong></p>
+					<p>Fecha de emision: <strong><?= $data['fechaOficio']; ?></strong></p>
 					<p>Asunto: <strong><?= $data['asuntoOficio']; ?></strong></p>
 					<p>Emite: <strong></strong><?= $data['nombreEmisor']; ?></p>
 					<p>Dirigido a: <strong><?= $data['dirigido']; ?></strong></p>
                     <p>Dirigido al plantel: <strong><?= $data['plantelRecibe']; ?>/strong></p>
 					<br><br>
-					<img src="<?= base_url(); ?>/Assets/images/favicon.ico" class="x_text_right">
+					<img src="http://localhost/sad/assets/images/cecytem.jpeg" class="x_text_right">
 					<br><br><br>
 					<p class="x_title_gray"><a href="<?= WEB_SISTEMA; ?>" target="_blanck"><?= WEB_SISTEMA; ?></a></p>
 				</td>

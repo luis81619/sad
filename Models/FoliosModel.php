@@ -18,6 +18,17 @@
             return $request;
         }
 
+        public function selectFolioAcuse(string $tokenAcuse){
+            $this->strTokenAcuse = $tokenAcuse;
+
+            $sql = "SELECT *
+            FROM sad_acuse sa
+            WHERE sa.acuse_token = '{$this->strTokenAcuse}'";
+
+            $request = $this->select($sql);
+            return $request;
+        }
+
     }
 
     

@@ -153,3 +153,44 @@
       </div>
    </div>
 </div>
+
+
+<!-- Modal Visualizar ACUSES -->
+<div class="modal fade" id="modalViewAcuses" tabindex="-1" role="dialog" aria-hidden="true">
+   <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+         <div class="modal-header header-primary">
+         <h5 class="modal-title" id="titleModal">Acuse</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body">
+
+
+         <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+               <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home2" role="tab" aria-controls="home" aria-selected="true">FOLIO-ACUSE</a>
+            </li>
+            <li class="nav-item">
+               <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile2" role="tab" aria-controls="profile" aria-selected="false">ACUSE</a>
+            </li>
+         </ul>
+         <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="home2" role="tabpanel" aria-labelledby="home-tab">
+               <embed src="" type="application/pdf" id="documentoFolioAcuse" width="100%" height="600px" />
+            </div>
+
+
+            <div class="tab-pane fade" id="profile2" role="tabpanel" aria-labelledby="profile-tab">
+               <embed src="" type="application/pdf" id="documentoAcuse" width="100%" height="600px" />
+            </div>
+         </div>
+            
+         </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+      </div>
+   </div>
+</div>

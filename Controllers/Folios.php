@@ -29,13 +29,26 @@ use Spipu\Html2Pdf\Html2Pdf;
                 echo "Dato no valido";
             }
             
-            /*
-            ob_end_clean();
-            $html = getModalCarpeta('Oficios','modalOficios', $dataFolioEmisor);
-            $html2pdf = new Html2Pdf();
-            $html2pdf->writeHTML($html);
-            $html2pdf->output();
-            */
+            die();
+        }
+
+        public function generarFolioAcuse($tokenAcuse)
+        {
+            if(!empty($tokenAcuse)){
+                $data = $this->model->selectFolioAcuse($tokenAcuse);
+                //dep($dataFolioEmisor);
+
+                ob_end_clean();
+                $html = getFile('Template/Modals/Oficios/FolioAcusePDF', $data);
+                $html2pdf = new Html2Pdf();
+                $html2pdf->writeHTML($html);
+                $html2pdf->output();
+
+
+            }else{
+                echo "Sin respuesta";
+            }
+            
             die();
         }
     }

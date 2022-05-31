@@ -217,35 +217,29 @@ header("Allow: GET, POST, OPTIONS, PUT, DELETE");
 
                 $usuarioPlantel = intval(strClean($_SESSION['userData']['plantel_id']));
                 $arrData = $this->model->selectOficos($usuarioPlantel);
-                $archivoId="";
-                //dep($arrData);
-                //die();
+                
+
+
                 for ($i=0; $i < count($arrData); $i++) {
-                    //echo("hola: ".$arrData[$i]['acuse_folio']);
-                   // $archivoId = strval($arrData[$i]['acuse_folio']);                    
-
-    
-
                     if(($arrData[$i]['idEmite'] == $usuarioPlantel && $arrData[$i]['idRecibe'] != $usuarioPlantel) && $arrData[$i]['acuse_folio'] == null){
                         $arrData[$i]['options'] = '<div class="text-center"> 
                         <button class="btn btn-info btn-sm btnViewOficios" onClick="fntViewOficio('.$arrData[$i]['oficio_id'].",'".$arrData[$i]['archivo_ruta']."'".')" title="Ver ofico"><i class="fa fa-folder"></i></button>
                         <button class="btn btn-secondary btn-sm btnViewDetalles" onClick="fntViewOficio('."'".$arrData[$i]['oficio_id']."'".')" title="Detalles"><i class="fa fa-info"></i></button>
-                        <button class="btn btn-success btn-sm btnViewDetalles" onClick="fntViewOficio('."'".$arrData[$i]['oficio_id']."'".')" title="Ver Acuse"><i class="far fa-eye"></i></button>
+                        <button class="btn btn-success btn-sm btnViewAcuse" onClick="fntViewAcuse('."'".$arrData[$i]['rutaAcuse']."','".$arrData[$i]['acuse_token']."'".')"  title="Ver Acuse"><i class="far fa-eye"></i></button>
                         </div>';
 
                     }else if(($arrData[$i]['idEmite'] != $usuarioPlantel && $arrData[$i]['idRecibe'] == $usuarioPlantel) && $arrData[$i]['acuse_folio'] == null){
                         $arrData[$i]['options'] = '<div class="text-center"> 
                         <button class="btn btn-info btn-sm btnViewOficios" onClick="fntViewOficio('.$arrData[$i]['oficio_id'].",'".$arrData[$i]['archivo_ruta']."'".')" title="Ver ofico"><i class="fa fa-folder"></i></button>
                         <button class="btn btn-secondary btn-sm btnViewDetalles" onClick="fntViewOficio('."'".$arrData[$i]['oficio_id']."'".')" title="Detalles"><i class="fa fa-info"></i></button>
-                        
-                        <button class="btn btn-danger btn-sm btnViewAcuse" onClick="fntEditAcuse(this,'.$arrData[$i]['oficio_id'].')" title="Acuse"><i class="fa fa-handshake-o"></i></button>
+                        <button class="btn btn-danger btn-sm btnViewAcuseW" onClick="fntEditAcuse(this,'.$arrData[$i]['oficio_id'].')" title="Acuse"><i class="fa fa-handshake-o"></i></button>
                         </div>';
 
                     }else if(($arrData[$i]['idEmite'] != $usuarioPlantel && $arrData[$i]['idRecibe'] == $usuarioPlantel) && $arrData[$i]['acuse_folio'] != null){
                         $arrData[$i]['options'] = '<div class="text-center"> 
                         <button class="btn btn-info btn-sm btnViewOficios" onClick="fntViewOficio('.$arrData[$i]['oficio_id'].",'".$arrData[$i]['archivo_ruta']."'".')" title="Ver ofico"><i class="fa fa-folder"></i></button>
                         <button class="btn btn-secondary btn-sm btnViewDetalles" onClick="fntViewOficio('."'".$arrData[$i]['oficio_id']."'".')" title="Detalles"><i class="fa fa-info"></i></button>
-                        <button class="btn btn-success btn-sm btnViewDetalles" onClick="fntViewOficio('."'".$arrData[$i]['oficio_id']."'".')" title="Ver Acuse"><i class="far fa-eye"></i></button>
+                        <button class="btn btn-success btn-sm btnViewAcuse" onClick="fntViewAcuse('."'".$arrData[$i]['rutaAcuse']."','".$arrData[$i]['acuse_token']."'".')"  title="Ver Acuse"><i class="far fa-eye"></i></button>
                         </div>';
 
                     }
@@ -253,7 +247,7 @@ header("Allow: GET, POST, OPTIONS, PUT, DELETE");
                         $arrData[$i]['options'] = '<div class="text-center"> 
                         <button class="btn btn-info btn-sm btnViewOficios" onClick="fntViewOficio('.$arrData[$i]['oficio_id'].",'".$arrData[$i]['archivo_ruta']."'".')" title="Ver ofico"><i class="fa fa-folder"></i></button>
                         <button class="btn btn-secondary btn-sm btnViewDetalles" onClick="fntViewOficio('."'".$arrData[$i]['oficio_id']."'".')" title="Detalles"><i class="fa fa-info"></i></button>
-                        <button class="btn btn-success btn-sm btnViewDetalles" onClick="fntViewOficio('."'".$arrData[$i]['oficio_id']."'".')" title="Ver Acuse"><i class="far fa-eye"></i></button>
+                        <button class="btn btn-success btn-sm btnViewAcuse" onClick="fntViewAcuse('."'".$arrData[$i]['rutaAcuse']."','".$arrData[$i]['acuse_token']."'".')"  title="Ver Acuse"><i class="far fa-eye"></i></button>
                         </div>';
 
                     }

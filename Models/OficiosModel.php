@@ -123,6 +123,15 @@
                     $this->strToken);
                 
                 $request = $this->insert($query_insert, $arrData);
+                $lastOFicio = $request;
+
+                $query_up = "UPDATE sad_acuse SET oficio_id = ? WHERE acuse_id = ".$lastAcuse;
+                $arrDataUp = array(
+                    $lastOFicio,
+                );
+    
+                $requestup = $this->update($query_up, $arrDataUp);
+
                 return $request;
             }else{
                 return 0;
@@ -135,11 +144,14 @@
             $this->intUsuarioPlantel = $usuarioPlantel;
 
             $sql = "SELECT so.oficio_id, so.oficio_serie, so.oficio_folio, so.oficio_dirigido, so.oficio_asunto, 
-            sp.nombre AS plantelEmite, spp.nombre AS plantelRecibe, so.oficio_status, so.archivo_id, sp.id AS idEmite, 
-            spp.id AS idRecibe, sa.acuse_folio, sr.archivo_ruta
-            FROM sad_oficio so
-            INNER JOIN sad_plantel sp ON so.plantel_id_emite = sp.id
-            INNER JOIN sad_plantel spp ON so.plantel_id_recibe = spp.id
+            sp.nombre AS plantelEmite, spp.nombre AS plantelRecibe, so.oficio_status, so.archivo_id, 
+            sp.id AS idEmite, spp.id AS idRecibe, sa.acuse_folio, sr.archivo_ruta, sa.acuse_token,(
+            SELECT srr.archivo_ruta FROM sad_acuse saa
+            INNER JOIN sad_archivo srr ON saa.archivo_id = srr.archivo_id
+            ) AS rutaAcuse
+            FROM sad_oficio so 
+            INNER JOIN sad_plantel sp ON so.plantel_id_emite = sp.id 
+            INNER JOIN sad_plantel spp ON so.plantel_id_recibe = spp.id 
             INNER JOIN sad_acuse sa ON so.acuse_id = sa.acuse_id 
             INNER JOIN sad_archivo sr ON so.archivo_id = sr.archivo_id
             WHERE so.plantel_id_emite = $this->intUsuarioPlantel  || so.plantel_id_recibe = $this->intUsuarioPlantel ";

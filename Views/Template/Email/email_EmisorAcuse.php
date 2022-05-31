@@ -96,13 +96,29 @@
 			<tr>
 				<td>
 					<div class="x_sgwrap x_title_blue">
-						<h1>Recibiste respueta de tu oficio</h1>
+						<h1><?= TITULO_EMISOR ?></h1>
 					</div>
 				</td>
 			</tr>
 			<tr>
 				<td>
-					
+					<img src="http://localhost/sad/assets/images/michoacan.jpeg" class="x_text_left">
+					<br><br><br>
+					<p class="x_text_aling">Fecha: <strong><?= $data['fecha_emision']; ?></strong></p>
+					<div class="x_sgwrap">
+						<p>Hola <?= $data['nombreEmisor']; ?></p>
+					</div>
+					<p>Se ha generado correctame el acuse de recibido del oficio con los siguientes datos:</p>
+					<p>Folio de acuse: <strong><?= $data['folio']; ?></strong></p>
+					<p>Folio del oficio: <strong><?= $data['nOficio']; ?></strong></p>
+					<p>Fecha de emision: <strong><?= $data['fechaOficio']; ?></strong></p>
+					<p>Emite: <strong></strong><?= $data['nombreEmisor']; ?></p>
+					<p>Dirigido a: <strong><?= $data['dirigido']; ?></strong></p>
+                    <p>Dirigido al plantel: <strong><?= $data['plantelRecibe']; ?>/strong></p>
+					<br><br>
+					<img src="http://localhost/sad/assets/images/cecytem.jpeg" class="x_text_right">
+					<br><br><br>
+					<p class="x_title_gray"><a href="<?= WEB_SISTEMA; ?>" target="_blanck"><?= WEB_SISTEMA; ?></a></p>
 				</td>
 			</tr>
 		</tbody>

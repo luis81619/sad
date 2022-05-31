@@ -188,6 +188,41 @@ $('#datetimeAcuse').datepicker({
     todayBtn: true
 });
 
+function fntViewAcuse(archivoAcuse, acuseToken)
+{
+    let token = acuseToken;
+    let rutaAcuse = archivoAcuse;
+
+    $.ajax({
+        type: 'GET',
+        url: 'http://archivo.cecytem.net:8080/DriveService/service/drive/archivo/download?id='+rutaAcuse,
+        dataType: 'json',
+        success: function (data) {
+
+        const binaryString = window.atob(data.content);
+        const len = binaryString.length;
+        const bytes = new Uint8Array(len);
+        for (let i = 0; i < len; ++i) {
+            bytes[i] = binaryString.charCodeAt(i);
+        }
+        var datosblob = new Blob([bytes], { type: 'application/pdf' });
+        $('#documentoAcuse').attr('src',URL.createObjectURL(datosblob));
+        
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+        console.log('error al ejecutar');
+    }
+});
+
+var urlFolioAcuse = 'http://localhost/sad/folios/generarFolioAcuse/'+token;
+
+$('#documentoFolioAcuse').attr('src', urlFolioAcuse);
+
+$('#modalViewAcuses').modal('show');
+
+
+}
+
 function fntViewOficio(idOficio  ,idOficioArchivo) {
     let idArchivo = idOficioArchivo;
     //alert(idOficio);
