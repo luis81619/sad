@@ -42,6 +42,82 @@ header("Allow: GET, POST, OPTIONS, PUT, DELETE");
 			die(); 
         }
 
+        public function setAcuse(){
+            //dep($_POST);
+            //dep($_FILES);
+            //die();
+            if(($_POST) && ($_FILES['acuseArchivo']['name'] != "" )){
+
+                if(empty($_POST['nAcuse']) || empty($_POST['datetimeAcuse'])){
+                    $arrResponse = array("status" => false, "msg" => 'Datos incorrectos.');
+                }else{
+
+                    $documento = $_FILES['acuseArchivo']['tmp_name'];
+                    $nombreArchivo = strtoupper(strClean($_POST['nAcuse']));
+                    $respAPI = apiDrive($nombreArchivo, $documento);
+
+                    if($respAPI != "exit"){
+                        $acuseOficioId = strtoupper(strClean($_POST['oficioAcuseId']));
+                        $acuseFolio = strtoupper(strClean($_POST['nAcuse']));
+                        $idarchivoAcuse = $respAPI;
+                        $strdateAcuse = strtoupper(strClean(depFecha($_POST['datetimeAcuse'])));
+                        $strTokenAcuse = token();
+
+                        $request_Acuse = $this->model->insertAcuse(
+                            $acuseOficioId,
+                            $acuseFolio,
+                            $idarchivoAcuse,
+                            $strdateAcuse,
+                            $strTokenAcuse
+                        );
+
+
+
+                        if($request_Acuse > 0){
+                            $request_datosEmail = $this->model->getDatosEmailAcuse($acuseFolio);
+
+                            $arrResponse = array('status' => true, 'msg' => 'Tu acuse se ha generado correctamente');
+                            
+                            $dataEmisor = array(
+                                'asunto' => 'SOD-NOTIFICACION RESPUESTA DE ACUSE',
+                                'email' => $request_datosEmail['correoRespuesta'],
+                                'nombreEmisor' => $request_datosEmail['plantelEmite'],
+                                'folio' => $acuseFolio,
+                                'nOficio' => $request_datosEmail['oficio_serie'],
+                                'fechaOficio' => $request_datosEmail['acuse_create'],
+                                'fecha_emision' => $strdateAcuse,
+                                'dirigido' => $request_datosEmail['plantelEmite'],
+                                'plantelRecibe' => $request_datosEmail['plantelRecibe']);
+                            
+                            $sendEmail = sendEmail($dataEmisor, 'email_EmisorAcuse');
+
+                            $dataRecibe = array(
+                                'asunto' => 'SOD-NOTIFICACION ENVIASTE RESPUESTA DE ACUSE',
+                                'email' => $request_datosEmail['correoAcuse'],
+                                'nombreEmisor' => $request_datosEmail['plantelEmite'],
+                                'folio' => $acuseFolio,
+                                'nOficio' => $request_datosEmail['oficio_serie'],
+                                'fechaOficio' => $request_datosEmail['acuse_create'],
+                                'fecha_emision' => $strdateAcuse,
+                                'dirigido' => $request_datosEmail['plantelEmite'],
+                                'plantelRecibe' => $request_datosEmail['plantelRecibe']);
+                            
+                            $sendEmail = sendEmail($dataRecibe, 'email_RecibeAcuse');
+
+                        }else{
+                            $arrResponse = array("status" => false, "msg" => 'No es posible realizar el proceso.');
+                        }
+
+                    }else{
+                        $arrResponse = array("status" => false, "msg" => 'No es posible realizar el proceso.');
+                    }
+
+                }
+                echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
+            }
+            die();
+        }
+
         public function setOficio(){
             //dep($_FILES);
             //die();
@@ -69,7 +145,7 @@ header("Allow: GET, POST, OPTIONS, PUT, DELETE");
                         $strAsunto = strtoupper(strClean($_POST['oficioAsunto']));
                         $strEmailEmite = strClean($_SESSION['userData']['users_email']);
                         $intplantelEmite = intval(strClean($_SESSION['userData']['plantel_id']));
-                        $strFolio = $this->model->generarFolio();
+                        //$strFolio = $this->model->generarFolio();
                         $strToken = token();
 
                         $request_oficio = $this->model->insertOficio(
@@ -81,20 +157,43 @@ header("Allow: GET, POST, OPTIONS, PUT, DELETE");
                             $strDirigido,
                             $intplantelEmite,
                             $intPlantelRecibe,
-                            $strFolio,
                             $strToken,
+                            $strEmailEmite,
                             $nombreArchivo);
+
+                        $request_datosEmail = $this->model->getDatosEmail();
+                        $plantelEmite = $request_datosEmail['plantelEmite'];
                         
                         if($request_oficio > 0){
                             $arrResponse = array('status' => true, 'msg' => 'Tu oficio se ha generado correctamente');
                             $dataEmisor = array(
-                                'asunto' => 'SOD-NOTIFICACION DE ACUSE',
+                                'asunto' => 'SOD-NOTIFICACION, ENVIO DE OFICIO',
                                 'email' => $strEmailEmite,
-                                'nombreEmisor' => $strEmite,
-                                'folio' => $strFolio,
+                                'nombreEmisor' => $plantelEmite,
+                                'folio' => $request_datosEmail['oficio_folio'],
+                                'serie' => $strNoficio,
+                                'fechaOficio' => $strdateOficio,
+                                'fecha_emision' => $request_datosEmail['oficio_create'],
+                                'dirigido' => $strDirigido,
+                                'plantelRecibe' => $request_datosEmail['plantelRecibe'],
                                 'asuntoOficio' => $strAsunto );
                             
                             $sendEmail = sendEmail($dataEmisor, 'email_Emisor');
+
+                            $dataRecibe = array(
+                                'asunto' => 'SOD-NOTIFICACION, RECIBISTE UN OFICIO',
+                                'email' => $request_datosEmail['users_email'],
+                                'nombreEmisor' => $request_datosEmail['plantelEmite'],
+                                'folio' => $request_datosEmail['oficio_folio'],
+                                'serie' => $strNoficio,
+                                'fechaOficio' => $strdateOficio,
+                                'fecha_emision' => $request_datosEmail['oficio_create'],
+                                'dirigido' => $strDirigido,
+                                'plantelRecibe' => $request_datosEmail['plantelRecibe'],
+                                'asuntoOficio' => $strAsunto );
+                            
+                            $sendEmail2 = sendEmail($dataRecibe, 'email_Recibe');
+
                         }else{
                             $arrResponse = array("status" => false, "msg" => 'No es posible realizar el proceso.');
                         }
@@ -139,7 +238,7 @@ header("Allow: GET, POST, OPTIONS, PUT, DELETE");
                         <button class="btn btn-info btn-sm btnViewOficios" onClick="fntViewOficio('.$arrData[$i]['oficio_id'].",'".$arrData[$i]['archivo_ruta']."'".')" title="Ver ofico"><i class="fa fa-folder"></i></button>
                         <button class="btn btn-secondary btn-sm btnViewDetalles" onClick="fntViewOficio('."'".$arrData[$i]['oficio_id']."'".')" title="Detalles"><i class="fa fa-info"></i></button>
                         
-                        <button class="btn btn-danger btn-sm btnViewAcuse" onClick="fntEditUsuario(this,'.$arrData[$i]['oficio_id'].')" title="Acuse"><i class="fa fa-handshake-o"></i></button>
+                        <button class="btn btn-danger btn-sm btnViewAcuse" onClick="fntEditAcuse(this,'.$arrData[$i]['oficio_id'].')" title="Acuse"><i class="fa fa-handshake-o"></i></button>
                         </div>';
 
                     }else if(($arrData[$i]['idEmite'] != $usuarioPlantel && $arrData[$i]['idRecibe'] == $usuarioPlantel) && $arrData[$i]['acuse_folio'] != null){

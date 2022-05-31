@@ -16,6 +16,12 @@
         private $strToken;   
         private $intUsuarioPlantel;
         private $intIdFolioEmisor;
+        private $intIdAcuse; 
+        private $strFolioAcuse; 
+        private $strIdArchivoAcuse; 
+        private $strDateAcuse; 
+        private $strTokenAcuse;
+        private $strEmailEmite;
 
         public function __construct()
         {
@@ -29,9 +35,10 @@
             return $request;
         }
 
+        /*
         public function generarFolio()
         {
-            $sql = "SELECT MAX(oficio_id) FROM sad_oficio";
+            $sql = "SELECT MAX(oficio_id) FROM sad_acuse";
             $request = $this->select($sql);
             $valor = intval($request);
 
@@ -43,11 +50,11 @@
                 $folio = "FL-SOD-".$valor;
             }
             return $folio;
-        }
+        }*/
 
         public function insertOficio(string $idArchivo, string $noFicio, string $asunto,
-        string $dateOficio, string $emite, string $dirigido, int $plantelEmite, int $plantelRecibe, string $Folio,
-        string $token, string $nombreArchivo)
+        string $dateOficio, string $emite, string $dirigido, int $plantelEmite, int $plantelRecibe,
+        string $token, string $emailEmite ,string $nombreArchivo)
         {
             $this->strNoficio = $noFicio;
             $this->strdateOficio = $dateOficio;
@@ -58,8 +65,8 @@
             $this->intplantelEmite = $plantelEmite;
             $this->idarchivo = $idArchivo;
             $this->strNombreArchivo = $nombreArchivo;
-            $this->strFolio = $Folio;
             $this->strToken = $token;
+            $this->strEmailEmite = $emailEmite; 
             $status = 1;
             $return = 0;
             $tipoArchivo = "DRIVE";
@@ -82,10 +89,18 @@
                 $request_archivo = $this->insert($query_insert_archivo, $arrData_archivo);
                 $lastArchivo = $request_archivo;
 
-                $query_insert_acuse = "INSERT INTO sad_acuse VALUES()";
-                $arrData_acuse = array();
+                $query_insert_acuse = "INSERT INTO sad_acuse (acuse_correo_asignado) VALUES(?)";
+                $arrData_acuse = array($this->strEmailEmite);
                 $request_acuse = $this->insert($query_insert_acuse, $arrData_acuse);
                 $lastAcuse = $request_acuse;
+
+                if($lastAcuse > 0 && $lastAcuse < 10){
+                    $folio = "FL-SOD-00".$lastAcuse;
+                }else if($lastAcuse > 9 && $lastAcuse < 100){
+                    $folio = "FL-SOD-0".$lastAcuse; 
+                }else{
+                    $folio = "FL-SOD-".$lastAcuse;
+                }
 
 
                 $query_insert = "INSERT INTO sad_oficio (archivo_id, oficio_folio, oficio_serie, oficio_asunto, 
@@ -95,7 +110,7 @@
 
                 $arrData = array(
                     $lastArchivo,
-                    $this->strFolio,
+                    $folio,
                     $this->strNoficio,
                     $this->strAsunto,
                     $this->strdateOficio,
@@ -132,6 +147,77 @@
             $request = $this->select_all($sql);
             return $request;
         }
+
+        public function insertAcuse(int $oficioId,string $AcuseFolio, string $idarchivoAcuse, string $dateAcuse, string $TokenAcuse){
+            $this->intIdOficio = $oficioId;
+            $this->strFolioAcuse = $AcuseFolio;
+            $this->strIdArchivoAcuse = $idarchivoAcuse;
+            $this->strDateAcuse = $dateAcuse;
+            $this->strTokenAcuse = $TokenAcuse;
+            $tipoArchivo = "DRIVE";
+            $return = 0;
+
+            $sqlIdAcuse = "SELECT sa.acuse_id FROM sad_acuse sa INNER JOIN sad_oficio so ON sa.acuse_id = so.acuse_id
+            WHERE so.oficio_id = $this->intIdOficio ";
+
+            $requestIdAcuse = $this->select($sqlIdAcuse);
+            $this->intIdAcuse = $requestIdAcuse['acuse_id'];
+
+            $query_insert_archivo = "INSERT INTO sad_archivo (archivo_ruta, archivo_tipo, archivo_nombre)
+                VALUES (?,?,?)";
+
+            $arrData_archivo = array(
+                $this->strIdArchivoAcuse,
+                $tipoArchivo,
+                $this->strFolioAcuse);
+                
+            $request_archivo = $this->insert($query_insert_archivo, $arrData_archivo);
+            $lastArchivo = $request_archivo;
+
+            $query_update_acuse = "UPDATE sad_acuse SET acuse_folio = ?, archivo_id = ?, acuse_f_asignado =?,
+            acuse_token = ?, acuse_create= now() WHERE acuse_id = $this->intIdAcuse";
+            $arrDataUpAcuse = array(
+                $this->strFolioAcuse,
+                $lastArchivo,
+                $this->strDateAcuse,
+                $this->strTokenAcuse
+            );
+
+            $request = $this->update($query_update_acuse, $arrDataUpAcuse);
+
+            return $request;        
+
+        }
+
+        public function getDatosEmail(){
+            $sql = "SELECT so.oficio_id, sp.nombre AS plantelEmite, spp.nombre AS plantelRecibe, so.oficio_create, su.users_email, so.oficio_folio 
+            FROM sad_oficio so INNER JOIN sad_plantel sp ON so.plantel_id_emite = sp.id 
+            INNER JOIN sad_plantel spp ON so.plantel_id_recibe = spp.id 
+            INNER JOIN sad_trabajador st ON st.plantel_id = so.plantel_id_recibe 
+            INNER JOIN sad_users su ON st.trabajador_id = su.trabajador_id 
+            WHERE oficio_id = (SELECT MAX(oficio_id) FROM sad_oficio)";
+
+            $request = $this->select($sql);
+            return $request;
+        }
+
+        public function getDatosEmailAcuse(string $FolioAcuse){
+            $this->strFolioAcuse = $FolioAcuse;
+
+            $sql = "SELECT sa.acuse_folio, sp.nombre AS plantelEmite, spp.nombre AS plantelRecibe, sa.acuse_correo_asignado AS correoRespuesta,
+            su.users_email AS correoAcuse, sa.acuse_token, sa.acuse_create, so.oficio_serie
+            FROM sad_oficio so
+            INNER JOIN sad_acuse sa ON so.acuse_id = sa.acuse_id
+            INNER JOIN sad_plantel sp ON so.plantel_id_emite = sp.id
+            INNER JOIN sad_plantel spp ON so.plantel_id_recibe = spp.id
+            INNER JOIN sad_trabajador st ON spp.id = st.plantel_id
+            INNER JOIN sad_users su ON st.trabajador_id = su.trabajador_id
+            WHERE sa.acuse_folio = '{$this->strFolioAcuse}'";
+
+            $request = $this->select($sql);
+            return $request;
+        }
+
 
         
 

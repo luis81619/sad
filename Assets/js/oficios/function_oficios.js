@@ -109,6 +109,48 @@ document.addEventListener('DOMContentLoaded', function(){
 
     }
 
+    var formAcuse = document.querySelector("#formAcuse");
+    formAcuse.onsubmit = function(e){
+        e.preventDefault();
+
+        var intOficioAcuseId = document.querySelector('#oficioAcuseId').value;
+        var strnAcuse = document.querySelector('#nAcuse').value;
+        var strDateAcuse= document.querySelector('#datetimeAcuse').value;
+        var strArchivoAcuse = document.querySelector('#acuseArchivo').value;
+
+        if(strnAcuse == '' || strDateAcuse == '')
+        {
+            swal("Atención", "Todos los campos son obligatorios.", "error");
+            return false;
+        }
+
+        var request = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
+        var ajaxUrl = base_url+'/Oficios/setAcuse'; 
+        var formDataAcuse = new FormData(formAcuse);
+        request.open("POST",ajaxUrl,true);
+        request.send(formDataAcuse);
+
+        request.onreadystatechange = function(){
+            if(request.readyState == 4 && request.status == 200){
+                var objData = JSON.parse(request.responseText);
+                
+                if(objData.status)
+                {
+                    $('#modalFormAcuse').modal("hide");
+                    formOficios.reset();
+                    swal("Acuse", objData.msg, "success");
+                    tableOficios.api().ajax.reload();
+                }else{
+                    swal("Error", objData.msg, "error");
+                }
+            }
+            divLoading.style.display = "none";
+            return false;
+            
+        }
+        
+    }
+
 }, false);
 
 
@@ -133,6 +175,13 @@ function fntPlantelOficios(){
 }
 
 $('#datetime').datepicker({
+    format: "dd/mm/yyyy",
+    language: "es",
+    autoclose: true,
+    todayBtn: true
+});
+
+$('#datetimeAcuse').datepicker({
     format: "dd/mm/yyyy",
     language: "es",
     autoclose: true,
@@ -180,8 +229,21 @@ document.querySelector('#oficioArchivo').addEventListener('change', () => {
     //console.log(archivoOficio);
 })
 
-function fntEditUsuario(element, idusuario) {
+document.querySelector('#acuseArchivo').addEventListener('change', () => {
+
+    let archivoAcuse = document.querySelector('#acuseArchivo').files[0];
+    let archivoAcuseURL = URL.createObjectURL(archivoAcuse);
+
+    document.querySelector('#vistaPreviaAcuse').setAttribute('src', archivoAcuseURL);
+    //console.log(archivoOficio);
+})
+
+function fntEditAcuse(element, idOficio) {
+    rowTable = element.parentNode.parentNode.parentNode;
+    var vidOficio = idOficio;
     $('#modalFormAcuse').modal('show');
+    document.querySelector("#oficioAcuseId").value = vidOficio;
+
 }
 
 function openModal(){

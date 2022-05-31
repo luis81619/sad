@@ -121,7 +121,7 @@
          </div>
          <div class="modal-body">
             <form id="formAcuse" name="formAcuse" class="form-horizontal">
-               <input type="hidden" id="oficioId" name="oficioId" value="">
+               <input type="hidden" id="oficioAcuseId" name="oficioAcuseId" value="">
                <p class="text-primary"> Todos los campos son obligatorios y los documentos requieren ser PDF</p>
 
                <h5 class="text-primary">Digitalización de Acuse</h5>
@@ -129,30 +129,20 @@
 
                <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label class="control-label">No. Oficio</label>
-                    <input class="form-control" id="nOficio" name="nOficio" type="text" placeholder="No. de Oficio" required="">
+                    <label class="control-label">No. Acuse</label>
+                    <input class="form-control" id="nAcuse" name="nAcuse" type="text" placeholder="No. de Acuse" required="">
+
+                    <label class="control-label">Fecha de Acuse</label>
+                    <input size="16" type="text" class="form-control" id="datetimeAcuse" name="datetimeAcuse" readonly>
+
                 </div>
-                <div class="form-group col-md-6">
-                     <label class="control-label">Fecha de emision</label>
-                     <input size="16" type="text" class="form-control" id="datetime" name="datetime" readonly>
-                </div>
-                
-               </div>
-               
-               <div class="form-row">
+
                 <div class="form-group col-md-6">
                   <label class="control-label">Archivo</label>
-                     <input class="form-control" id="oficioArchivo" name="oficioArchivo" type="file" placeholder="Archivo" required="">
-                     <embed id="vistaPrevia" type="application/pdf" width="550" height="400">
-                </div>
-                <div class="form-group col-md-6">
-                     <label class="control-label">Correo</label>
-                     <input size="16" type="text" class="form-control" id="datetime" name="datetime" readonly>
+                     <input class="form-control" id="acuseArchivo" name="acuseArchivo" type="file" placeholder="Archivo" required="">
+                     <embed id="vistaPreviaAcuse" type="application/pdf" width="550" height="400">
                 </div>
                </div> 
-            
-
-               
                
                <div class="tile-footer">
                 <button id="btnActionForm" class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i><span id="btnText">Guardar</span></button>&nbsp;&nbsp;&nbsp;
