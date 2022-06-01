@@ -114,7 +114,7 @@
 					<p>Fecha de emision: <strong><?= $data['fechaOficio']; ?></strong></p>
 					<p>Emite: <strong></strong><?= $data['nombreEmisor']; ?></p>
 					<p>Dirigido a: <strong><?= $data['dirigido']; ?></strong></p>
-                    <p>Dirigido al plantel: <strong><?= $data['plantelRecibe']; ?>/strong></p>
+                    <p>Dirigido al plantel: <strong><?= $data['plantelRecibe']; ?></strong></p>
 					<br><br>
 					<img src="http://localhost/sad/assets/images/cecytem.jpeg" class="x_text_right">
 					<br><br><br>
