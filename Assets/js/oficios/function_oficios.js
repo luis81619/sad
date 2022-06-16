@@ -124,6 +124,7 @@ document.addEventListener('DOMContentLoaded', function(){
             return false;
         }
 
+        divLoading.style.display = "flex";
         var request = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
         var ajaxUrl = base_url+'/Oficios/setAcuse'; 
         var formDataAcuse = new FormData(formAcuse);
@@ -193,7 +194,11 @@ function fntViewAcuse(archivoAcuse, acuseToken)
     let token = acuseToken;
     let rutaAcuse = archivoAcuse;
 
-    $.ajax({
+    var urlAcuse = 'https://drive.google.com/open?id='+rutaAcuse;
+
+    $('#vistaAcuse').attr('href', urlAcuse);
+
+    /*$.ajax({
         type: 'GET',
         url: 'http://archivo.cecytem.net:8080/DriveService/service/drive/archivo/download?id='+rutaAcuse,
         dataType: 'json',
@@ -212,7 +217,7 @@ function fntViewAcuse(archivoAcuse, acuseToken)
     error: function (jqXHR, textStatus, errorThrown) {
         console.log('error al ejecutar');
     }
-});
+});*/
 
 var urlFolioAcuse = 'http://localhost/sad/folios/generarFolioAcuse/'+token;
 
@@ -224,9 +229,13 @@ $('#modalViewAcuses').modal('show');
 }
 
 function fntViewOficio(idOficio  ,idOficioArchivo) {
-    let idArchivo = idOficioArchivo;
-    //alert(idOficio);
-	
+    var idArchivo = idOficioArchivo;
+
+    var urlAcuse = 'https://drive.google.com/open?id='+idArchivo;
+
+    $('#documentoAcuse').attr('href', urlAcuse);
+
+	/*
     $.ajax({
         type: 'GET',
         url: 'http://archivo.cecytem.net:8080/DriveService/service/drive/archivo/download?id='+idArchivo,
@@ -247,11 +256,35 @@ function fntViewOficio(idOficio  ,idOficioArchivo) {
         console.log('error al ejecutar');
     }
 });
+*/
     var urlFolioEmisor = 'http://localhost/sad/folios/generarFolioEmite/'+idOficio;
 
     $('#documentoFolioEmisor').attr('src', urlFolioEmisor);
 
     $('#modalViewOficio').modal('show');
+}
+
+function fntViewDetalles(idOficio) {
+	let request = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
+	let ajaxUrl = base_url + '/Oficios/getDetalles/' + idOficio;
+	request.open("GET", ajaxUrl, true);
+	request.send();
+
+	request.onreadystatechange = function () {
+		if (request.readyState == 4 && request.status == 200) {
+			let objData = JSON.parse(request.responseText);
+
+			if (objData.status) {
+
+				document.querySelector("#celNoTrabajador").innerHTML = objData.data.oficio_folio;
+				document.querySelector("#celNombre").innerHTML = objData.data.oficio_asunto;
+
+				$('#modalViewDetalles').modal('show');
+			} else {
+				swal("Error", objData.msg, "error");
+			}
+		}
+	}
 }
 
 
@@ -261,7 +294,7 @@ document.querySelector('#oficioArchivo').addEventListener('change', () => {
     let archivoOficioURL = URL.createObjectURL(archivoOficio);
 
     document.querySelector('#vistaPrevia').setAttribute('src', archivoOficioURL);
-    //console.log(archivoOficio);
+    console.log(archivoOficioURL);
 })
 
 document.querySelector('#acuseArchivo').addEventListener('change', () => {

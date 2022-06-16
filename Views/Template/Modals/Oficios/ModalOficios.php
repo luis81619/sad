@@ -42,7 +42,7 @@
                   <input class="form-control valid validText" id="oficioEmite" name="oficioEmite" type="text" placeholder="Emite" required="">
                   
                     <label class="control-label">Asunto</label>
-                     <input class="form-control valid validText" id="oficioAsunto" name="oficioAsunto" type="text" placeholder="No. de Oficio" required="">
+                     <input class="form-control valid validText" id="oficioAsunto" name="oficioAsunto" type="text" placeholder="Asunto" required="">
                   
                   
                   
@@ -95,7 +95,8 @@
 
 
             <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-               <embed src="" type="application/pdf" id="documentoOficio" width="100%" height="600px" />
+               <!--<embed src="" type="application/pdf" id="documentoOficio" width="100%" height="600px" />-->
+               <a href="" id="documentoAcuse" target="_blank">Click para visualizar acuse</a>
             </div>
          </div>
             
@@ -183,12 +184,73 @@
 
 
             <div class="tab-pane fade" id="profile2" role="tabpanel" aria-labelledby="profile-tab">
-               <embed src="" type="application/pdf" id="documentoAcuse" width="100%" height="600px" />
+               <!--<embed src="" type="application/pdf" id="documentoAcuse" width="100%" height="600px" />-->
+               <a href="" id="vistaAcuse" target="_blank">Click para visualizar acuse</a>
             </div>
          </div>
             
          </div>
             <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+      </div>
+   </div>
+</div>
+
+<!-- Modal Detalles-->
+
+<div class="modal fade" id="modalViewDetalles" tabindex="-1" role="dialog" aria-hidden="true">
+   <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+         <div class="modal-header header-primary">
+         <h5 class="modal-title" id="titleModal">DETALLES</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body">
+         <table class="table table-bordered">
+            <tbody>
+                <tr>
+                <td>Folio:</td>
+                <td id="celNoTrabajador">654654654</td>
+                </tr>
+                <tr>
+                <td>Nombres:</td>
+                <td id="celNombre">Jacob</td>
+                </tr>
+                <tr>
+                <td>Apellido Materno:</td>
+                <td id="celApellido1">Jacob</td>
+                </tr>
+                <tr>
+                <td>Apellido Paterno:</td>
+                <td id="celApellido2">Jacob</td>
+                </tr>
+                <tr>
+                <td>Email (Usuario):</td>
+                <td id="celEmail">Larry</td>
+                </tr>
+                <tr>
+                <td>Plantel:</td>
+                <td id="celPlantel">Larry</td>
+                </tr>
+                <tr>
+                <td>Tipo Usuario:</td>
+                <td id="celTipoUsuario">Larry</td>
+                </tr>
+                <tr>
+                <td>Status:</td>
+                <td id="celStatus">Larry</td>
+                </tr>
+                <tr>
+                <td>Fecha registro:</td>
+                <td id="celFechaRegistro">Larry</td>
+                </tr>
+            </tbody>
+            </table>
+         </div>
+         <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
             </div>
       </div>

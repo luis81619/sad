@@ -180,7 +180,7 @@ require 'Libraries/apiDrive/vendor/autoload.php';
                 $mail->send();
                 return true;
             } catch (Exception $e) {
-                return false;
+                return $e;
             }
             
         }
@@ -196,17 +196,17 @@ require 'Libraries/apiDrive/vendor/autoload.php';
 
         try {
             //Server settings
-            $mail->SMTPDebug = 1;                      //Enable verbose debug output
+            $mail->SMTPDebug = 0;                      //Enable verbose debug output
             $mail->isSMTP();                                            //Send using SMTP
             $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
             $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
-            $mail->Username   = 'a0081771@cecytem.edu.mx';                     //SMTP username
-            $mail->Password   = 'locura81619';                               //SMTP password
+            $mail->Username   = 'archivo@cecytem.edu.mx';                     //SMTP username
+            $mail->Password   = 'archivodigital2020';                               //SMTP password
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
             $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
 
             //Recipients
-            $mail->setFrom('a0081771@cecytem.edu.mx', 'ACTIVACION DE CUENTA - SEL');
+            $mail->setFrom('archivo@cecytem.edu.mx', 'SISTEMA DE OFICIOS DIGITALES - CECYTEM');
             $mail->addAddress($data['email']);     //Add a recipient
             //$mail->addAddress('ellen@example.com');               //Name is optional
             //$mail->addReplyTo('info@example.com', 'Information');
@@ -224,7 +224,7 @@ require 'Libraries/apiDrive/vendor/autoload.php';
             //$mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
 
             $mail->send();
-            echo 'Message has been sent';
+            //echo 'Message has been sent';
         } catch (Exception $e) {
             echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
         }

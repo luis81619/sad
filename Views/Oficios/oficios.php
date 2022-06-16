@@ -10,7 +10,7 @@
     }else{?>
       <div class="app-title">
         <div>
-          <h1><i class="fas fa-user-tag"></i> <?= $data['page_title'] ?>
+          <h1><i class="fas fa-file"></i> <?= $data['page_title'] ?>
               <button class="btn btn-primary" type="button" onclick="openModal();" ><i class="fas fa-plus-circle"></i> Nuevo Oficio</button>
           </h1>
         </div>

@@ -273,5 +273,6 @@ function openModal(){
     document.querySelector("#formUsuario").reset();
 
     $('#modalFormUsuario').modal('show');
+    document.querySelector('#usuarioStatus').value = 1;
 }
 

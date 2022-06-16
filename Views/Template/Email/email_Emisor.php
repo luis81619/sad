@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-	<title>Activar Cuenta - SEL</title>
+	<title>EMAIL</title>
 	<style type="text/css">
 		p{
 			font-family: arial;
@@ -88,6 +88,8 @@
 		.x_text_aling {
 			text-align: right;	
 		}
+
+
 	</style>
 </head>
 <body>
@@ -96,13 +98,14 @@
 			<tr>
 				<td>
 					<div class="x_sgwrap x_title_blue">
-						<h1><?= TITULO_EMISOR ?></h1>
+						<h1></h1>
 					</div>
 				</td>
 			</tr>
 			<tr>
 				<td>
-					<img src="http://localhost/sad/assets/images/michoacan.jpeg" class="x_text_left">
+					<!-- <img src="assets/images/michoacan.png" class="x_text_left"> -->
+					
 					<br><br><br>
 					<p class="x_text_aling">Fecha: <strong><?= $data['fecha_emision']; ?></strong></p>
 					<div class="x_sgwrap">
@@ -117,7 +120,7 @@
 					<p>Dirigido a: <strong><?= $data['dirigido']; ?></strong></p>
                     <p>Dirigido al plantel: <strong><?= $data['plantelRecibe']; ?></strong></p>
 					<br><br>
-					<img src="http://localhost/sad/assets/images/cecytem.jpeg" class="x_text_right">
+					<!-- <img src="http://localhost/sad/assets/images/cecytem.png" class="x_text_right"> -->
 					<br><br><br>
 					<p class="x_title_gray"><a href="<?= WEB_SISTEMA; ?>" target="_blanck"><?= WEB_SISTEMA; ?></a></p>
 				</td>

@@ -43,13 +43,15 @@ header("Allow: GET, POST, OPTIONS, PUT, DELETE");
         }
 
         public function setAcuse(){
-            //dep($_POST);
-            //dep($_FILES);
-            //die();
+
             if(($_POST) && ($_FILES['acuseArchivo']['name'] != "" )){
+                
+                $requestValiAcuse = $this->model->getValidarAcuse($_POST['nAcuse']);
 
                 if(empty($_POST['nAcuse']) || empty($_POST['datetimeAcuse'])){
                     $arrResponse = array("status" => false, "msg" => 'Datos incorrectos.');
+                }else if(!empty($requestValiAcuse)){
+                    $arrResponse = array("status" => false, "msg" => 'No. Acuse ya existe');
                 }else{
 
                     $documento = $_FILES['acuseArchivo']['tmp_name'];
@@ -70,8 +72,6 @@ header("Allow: GET, POST, OPTIONS, PUT, DELETE");
                             $strdateAcuse,
                             $strTokenAcuse
                         );
-
-
 
                         if($request_Acuse > 0){
                             $request_datosEmail = $this->model->getDatosEmailAcuse($acuseFolio);
@@ -124,11 +124,21 @@ header("Allow: GET, POST, OPTIONS, PUT, DELETE");
             
             if(($_POST) && ($_FILES['oficioArchivo']['name'] != "" )){
 
-                if(empty($_POST['nOficio']) || empty($_POST['datetime']) || empty($_POST['oficioPlantelid']) || empty($_POST['oficioPlantelid']) 
+                $requestValiOficio = $this->model->getValidarOficio($_POST['nOficio']);
+
+                if(empty($_POST['nOficio']) || empty($_POST['datetime']) || empty($_POST['oficioPlantelid']) 
                 || empty($_POST['oficioDirigido']) || empty($_POST['oficioEmite']) || empty($_POST['oficioAsunto']) ){
                     
                     $arrResponse = array("status" => false, "msg" => 'Datos incorrectos.');
+                }else if(!empty($requestValiOficio)){
+
+                    $arrResponse = array("status" => false, "msg" => 'No. Oficio ya existe');
+
+                }else if($_POST['oficioPlantelid'] == $_SESSION['userData']['plantel_id']){
+                    $arrResponse = array("status" => false, "msg" => 'Seleccione diferente plantel');
+
                 }else{
+
                     $documento = $_FILES['oficioArchivo']['tmp_name'];
                     $nombreArchivo = strtoupper(strClean($_POST['nOficio']));
                     $respAPI = apiDrive($nombreArchivo, $documento);
@@ -160,12 +170,16 @@ header("Allow: GET, POST, OPTIONS, PUT, DELETE");
                             $strToken,
                             $strEmailEmite,
                             $nombreArchivo);
-
-                        $request_datosEmail = $this->model->getDatosEmail();
-                        $plantelEmite = $request_datosEmail['plantelEmite'];
+                             
                         
                         if($request_oficio > 0){
                             $arrResponse = array('status' => true, 'msg' => 'Tu oficio se ha generado correctamente');
+                            $request_datosEmail = $this->model->getDatosEmail();
+                            $plantelEmite = $request_datosEmail['plantelEmite'];
+
+
+                            $request_DatosEmailRecibe = $this->model->getDatosEmailRecibe();
+                
                             $dataEmisor = array(
                                 'asunto' => 'SOD-NOTIFICACION, ENVIO DE OFICIO',
                                 'email' => $strEmailEmite,
@@ -173,39 +187,57 @@ header("Allow: GET, POST, OPTIONS, PUT, DELETE");
                                 'folio' => $request_datosEmail['oficio_folio'],
                                 'serie' => $strNoficio,
                                 'fechaOficio' => $strdateOficio,
-                                'fecha_emision' => $request_datosEmail['oficio_create'],
+                                'fecha_emision' => $request_datosEmail['oficio_fecha_emision'],
                                 'dirigido' => $strDirigido,
-                                'plantelRecibe' => $request_datosEmail['plantelRecibe'],
+                                'plantelRecibe' => $request_DatosEmailRecibe['nombre'],
                                 'asuntoOficio' => $strAsunto );
                             
-                            $sendEmail = sendEmail($dataEmisor, 'email_Emisor');
+                            /*
+                            $dataEmisor = array(
+                                'asunto' => 'SOD-NOTIFICACION, ENVIO DE OFICIO',
+                                'email' => 'ferluisrv25@gmail.com',
+                                'nombreEmisor' => 'prueba',
+                                'folio' => 'prueba',
+                                'serie' => 'prueba',
+                                'fechaOficio' => 'prueba',
+                                'fecha_emision' => 'prueba',
+                                'dirigido' => 'prueba',
+                                'plantelRecibe' => 'prueba',
+                                'asuntoOficio' => 'prueba' );
+                            */
+                            
+                            $sendEmail = sendMailLocal($dataEmisor, 'email_Emisor');
 
+                            
+                            
+                            
                             $dataRecibe = array(
                                 'asunto' => 'SOD-NOTIFICACION, RECIBISTE UN OFICIO',
-                                'email' => $request_datosEmail['users_email'],
+                                'email' => $request_DatosEmailRecibe['users_email'],
                                 'nombreEmisor' => $request_datosEmail['plantelEmite'],
                                 'folio' => $request_datosEmail['oficio_folio'],
                                 'serie' => $strNoficio,
                                 'fechaOficio' => $strdateOficio,
-                                'fecha_emision' => $request_datosEmail['oficio_create'],
+                                'fecha_emision' => $request_datosEmail['oficio_fecha_emision'],
                                 'dirigido' => $strDirigido,
-                                'plantelRecibe' => $request_datosEmail['plantelRecibe'],
+                                'plantelRecibe' => $request_DatosEmailRecibe['nombre'],
                                 'asuntoOficio' => $strAsunto );
                             
-                            $sendEmail2 = sendEmail($dataRecibe, 'email_Recibe');
-
+                            $sendEmail2 = sendMailLocal($dataRecibe, 'email_Recibe');
+                            
                         }else{
-                            $arrResponse = array("status" => false, "msg" => 'No es posible realizar el proceso.');
+                            $arrResponse = array("status" => false, "msg" => 'No es posible realizar el proceso 1.');
                         }
                         
                     }else{
-                        $arrResponse = array("status" => false, "msg" => 'No es posible realizar el proceso.');
+                        $arrResponse = array("status" => false, "msg" => 'No es posible realizar el proceso 2.');
                     }
                     
                 }
-                sleep(2);
+                //sleep(2);
                 echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
-                
+                //dep("hola1".' '.$sendEmail);
+                //dep("hola2".' '.$sendEmail2);
             }                
                 die();
              
@@ -224,21 +256,21 @@ header("Allow: GET, POST, OPTIONS, PUT, DELETE");
                     if(($arrData[$i]['idEmite'] == $usuarioPlantel && $arrData[$i]['idRecibe'] != $usuarioPlantel) && $arrData[$i]['acuse_folio'] == null){
                         $arrData[$i]['options'] = '<div class="text-center"> 
                         <button class="btn btn-info btn-sm btnViewOficios" onClick="fntViewOficio('.$arrData[$i]['oficio_id'].",'".$arrData[$i]['archivo_ruta']."'".')" title="Ver ofico"><i class="fa fa-folder"></i></button>
-                        <button class="btn btn-secondary btn-sm btnViewDetalles" onClick="fntViewOficio('."'".$arrData[$i]['oficio_id']."'".')" title="Detalles"><i class="fa fa-info"></i></button>
+                        <button class="btn btn-secondary btn-sm btnViewDetalles" onClick="fntViewDetalles('."'".$arrData[$i]['oficio_id']."'".')" title="Detalles"><i class="fa fa-info"></i></button>
                         <button class="btn btn-success btn-sm btnViewAcuse" onClick="fntViewAcuse('."'".$arrData[$i]['rutaAcuse']."','".$arrData[$i]['acuse_token']."'".')"  title="Ver Acuse"><i class="far fa-eye"></i></button>
                         </div>';
 
                     }else if(($arrData[$i]['idEmite'] != $usuarioPlantel && $arrData[$i]['idRecibe'] == $usuarioPlantel) && $arrData[$i]['acuse_folio'] == null){
                         $arrData[$i]['options'] = '<div class="text-center"> 
                         <button class="btn btn-info btn-sm btnViewOficios" onClick="fntViewOficio('.$arrData[$i]['oficio_id'].",'".$arrData[$i]['archivo_ruta']."'".')" title="Ver ofico"><i class="fa fa-folder"></i></button>
-                        <button class="btn btn-secondary btn-sm btnViewDetalles" onClick="fntViewOficio('."'".$arrData[$i]['oficio_id']."'".')" title="Detalles"><i class="fa fa-info"></i></button>
+                        <button class="btn btn-secondary btn-sm btnViewDetalles" onClick="fntViewDetalles('."'".$arrData[$i]['oficio_id']."'".')" title="Detalles"><i class="fa fa-info"></i></button>
                         <button class="btn btn-danger btn-sm btnViewAcuseW" onClick="fntEditAcuse(this,'.$arrData[$i]['oficio_id'].')" title="Acuse"><i class="fa fa-handshake-o"></i></button>
                         </div>';
 
                     }else if(($arrData[$i]['idEmite'] != $usuarioPlantel && $arrData[$i]['idRecibe'] == $usuarioPlantel) && $arrData[$i]['acuse_folio'] != null){
                         $arrData[$i]['options'] = '<div class="text-center"> 
                         <button class="btn btn-info btn-sm btnViewOficios" onClick="fntViewOficio('.$arrData[$i]['oficio_id'].",'".$arrData[$i]['archivo_ruta']."'".')" title="Ver ofico"><i class="fa fa-folder"></i></button>
-                        <button class="btn btn-secondary btn-sm btnViewDetalles" onClick="fntViewOficio('."'".$arrData[$i]['oficio_id']."'".')" title="Detalles"><i class="fa fa-info"></i></button>
+                        <button class="btn btn-secondary btn-sm btnViewDetalles" onClick="fntViewDetalles('."'".$arrData[$i]['oficio_id']."'".')" title="Detalles"><i class="fa fa-info"></i></button>
                         <button class="btn btn-success btn-sm btnViewAcuse" onClick="fntViewAcuse('."'".$arrData[$i]['rutaAcuse']."','".$arrData[$i]['acuse_token']."'".')"  title="Ver Acuse"><i class="far fa-eye"></i></button>
                         </div>';
 
@@ -246,28 +278,40 @@ header("Allow: GET, POST, OPTIONS, PUT, DELETE");
                     else if(($arrData[$i]['idEmite'] == $usuarioPlantel && $arrData[$i]['idRecibe'] != $usuarioPlantel) && $arrData[$i]['acuse_folio'] != null){
                         $arrData[$i]['options'] = '<div class="text-center"> 
                         <button class="btn btn-info btn-sm btnViewOficios" onClick="fntViewOficio('.$arrData[$i]['oficio_id'].",'".$arrData[$i]['archivo_ruta']."'".')" title="Ver ofico"><i class="fa fa-folder"></i></button>
-                        <button class="btn btn-secondary btn-sm btnViewDetalles" onClick="fntViewOficio('."'".$arrData[$i]['oficio_id']."'".')" title="Detalles"><i class="fa fa-info"></i></button>
+                        <button class="btn btn-secondary btn-sm btnViewDetalles" onClick="fntViewDetalles('."'".$arrData[$i]['oficio_id']."'".')" title="Detalles"><i class="fa fa-info"></i></button>
                         <button class="btn btn-success btn-sm btnViewAcuse" onClick="fntViewAcuse('."'".$arrData[$i]['rutaAcuse']."','".$arrData[$i]['acuse_token']."'".')"  title="Ver Acuse"><i class="far fa-eye"></i></button>
                         </div>';
 
                     }
 
-                    //$arrData[$i]['options'] = "opc1";
-                    
-                   //echo("hola: ".$arrData[$i]['acuse_folio']);
-
-                    /*
-                    $arrData[$i]['options'] = '<div class="text-center"> 
-                    <button class="btn btn-info btn-sm btnViewOficios" onClick="fntViewOficio('."'".$arrData[$i]['oficio_id']."'".')" title="Ver ofico"><i class="fa fa-folder"></i></button>
-                    <button class="btn btn-secondary btn-sm btnViewDetalles" onClick="fntViewOficio('."'".$arrData[$i]['oficio_id']."'".')" title="Detalles"><i class="fa fa-info"></i></button>
-                    <button class="btn btn-danger btn-sm btnViewAcuse" onClick="fntViewOficio('."'".$arrData[$i]['oficio_id']."'".')" title="Acuse"><i class="fa fa-handshake-o"></i></button>
-                    <button class="btn btn-success btn-sm btnViewDetaññes" onClick="fntViewOficio('."'".$arrData[$i]['oficio_id']."'".')" title="Ver Acuse"><i class="far fa-eye"></i></button>
-                    </div>';*/
 
                     }
                     echo json_encode($arrData,JSON_UNESCAPED_UNICODE);    
            // }
             
+            die();
+
+        }
+
+        public function getDetalles(int $oficio)
+        {
+            /*echo $idOficio;
+            die();*/
+
+            $idOficio = intval($oficio);
+            if($idOficio > 0)
+            {
+                $arrData = $this->model->selectOficio($idOficio);
+                //dep($arrData);
+
+                if(empty($arrData)){
+                    $arrResponse = array("status" => false, "msg" => 'Datos no encontrados');
+                }else{
+                    $arrResponse = array("status" => true, "data" => $arrData);
+                }
+                echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);   
+                
+            }
             die();
 
         }

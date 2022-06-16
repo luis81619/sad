@@ -5,6 +5,7 @@
         <div>
           <p class="app-sidebar__user-name"><?= $_SESSION['userData']['trabajador_nombre'] ?></p>
           <p class="app-sidebar__user-designation"><?= $rol = $_SESSION['userData']['users_rol'] == 1 ? 'DIGITALIZADOR':'ADMINISTRADOR'  ?></p>
+          <p class="app-sidebar__user-name"><?= $_SESSION['userData']['nombre'] ?>
         </div>
       </div>
       <ul class="app-menu">

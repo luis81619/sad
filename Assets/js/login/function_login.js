@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function(){
                         {
                             window.location = base_url+'/dashboard';
                         }else{
-                            swal("Atenciòn", objData.msg, "error");
+                            swal("Atención", objData.msg, "error");
                             document.querySelector('#loginPassword').value = "";
                         }
                     }else{

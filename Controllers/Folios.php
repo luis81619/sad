@@ -19,7 +19,7 @@ use Spipu\Html2Pdf\Html2Pdf;
                 //dep($dataFolioEmisor);
 
                 ob_end_clean();
-                $html = getFile('Template/Modals/Oficios/FolioEmisorPDF', $data);
+                $html = getFile('Template/Modals/Oficios/folioEmisorPDF', $data);
                 $html2pdf = new Html2Pdf();
                 $html2pdf->writeHTML($html);
                 $html2pdf->output();
